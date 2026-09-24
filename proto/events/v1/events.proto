@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package events.v1;
+
+option go_package = "github.com/cladder/ke-events/gen/events/v1;eventsv1";
+
+service EventAggregationService {
+  rpc GetEvent(GetEventRequest) returns (GetEventResponse);
+  rpc ListEvents(ListEventsRequest) returns (ListEventsResponse);
+  rpc RegisterSource(RegisterSourceRequest) returns (RegisterSourceResponse);
+  rpc IngestEndpoint(IngestEndpointRequest) returns (IngestEndpointResponse);
+  rpc StreamEvents(StreamEventsRequest) returns (stream EventMessage);
+}
+
+message TicketTier {
+  string name = 1;
+  double price = 2;
+  string currency = 3;
+  string conditions = 4;
+  repeated string benefits = 5;
+  string availability = 6;
+}
+
+message EventSchedule {
+  string date = 1;
+  string start_time = 2;
+  string end_time = 3;
+}
+
+message EventMessage {
+  string id = 1;
+  string short_code = 2;
+  string source_id = 3;
+  string source_name = 4;
+  string title = 5;
+  string description = 6;
+  string venue = 7;
+  string county = 8;
+  string main_photo = 9;
+  string main_photo_storage_url = 10;
+  repeated string photos = 11;
+  repeated EventSchedule schedules = 12;
+  repeated TicketTier ticket_tiers = 13;
+  string google_maps_link = 14;
+  repeated string itinerary = 15;
+  repeated string what_to_expect = 16;
+  string event_url = 17;
+  string created_at = 18;
+}
+
+message GetEventRequest {
+  string id = 1;
+}
+
+message GetEventResponse {
+  EventMessage event = 1;
+}
+
+message ListEventsRequest {
+  string county = 1;
+  string query = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message ListEventsResponse {
+  repeated EventMessage events = 1;
+  int64 total = 2;
+}
+
+message RegisterSourceRequest {
+  string name = 1;
+  string endpoint_url = 2;
+  string adapter_type = 3;
+}
+
+message RegisterSourceResponse {
+  string source_id = 1;
+  string title = 2;
+  string description = 3;
+  string logo_url = 4;
+  string status = 5;
+}
+
+message IngestEndpointRequest {
+  string endpoint_url = 1;
+  string adapter_type = 2;
+}
+
+message IngestEndpointResponse {
+  int32 ingested_count = 1;
+  repeated string event_ids = 2;
+}
+
+message StreamEventsRequest {
+  string county = 1;
+}

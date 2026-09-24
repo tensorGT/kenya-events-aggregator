@@ -1,0 +1,6 @@
+list.txt
+.env
+bin/
+*.exe
+*.log
+gen/
