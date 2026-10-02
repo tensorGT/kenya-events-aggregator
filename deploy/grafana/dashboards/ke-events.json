@@ -1,0 +1,47 @@
+{
+  "title": "Kenyan Events Aggregator - System Telemetry",
+  "uid": "ke-events-main",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "10s",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Events Ingested by Kenyan Ticketer",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [{ "expr": "sum by (source) (ke_events_ingested_total{status=\"ok\"})", "legendFormat": "{{source}}" }]
+    },
+    {
+      "id": 2,
+      "title": "Redis Cache Hit Ratio",
+      "type": "stat",
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 0 },
+      "targets": [{ "expr": "ke_cache_hits_total / clamp_min(ke_cache_hits_total + ke_cache_misses_total, 1)" }]
+    },
+    {
+      "id": 3,
+      "title": "Outbox Events Published & DLQ",
+      "type": "stat",
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 0 },
+      "targets": [
+        { "expr": "sum(ke_outbox_events_published_total)", "legendFormat": "Outbox Published" },
+        { "expr": "sum(ke_dlq_messages_total)", "legendFormat": "DLQ Messages" }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "HTTP Request Rate (Nginx -> API Replicas)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "targets": [{ "expr": "sum by (instance, method) (rate(ke_http_requests_total[1m]))", "legendFormat": "{{instance}} {{method}}" }]
+    },
+    {
+      "id": 5,
+      "title": "Crawler Circuit Breaker States (0=Closed, 2=Open)",
+      "type": "bargauge",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "targets": [{ "expr": "max by (domain) (ke_crawler_circuit_breaker_state)", "legendFormat": "{{domain}}" }]
+    }
+  ]
+}
