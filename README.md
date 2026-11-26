@@ -91,3 +91,25 @@ curl "http://localhost:8080/api/v1/events?county=Nairobi&limit=10"
 - **Grafana:** `http://localhost:3000` (`admin` / `admin_password`)
 - **Prometheus:** `http://localhost:9091`
 - **S3 Object Storage:** `http://localhost:19000`
+
+---
+
+## Observability & Generating Live Telemetry
+
+Grafana comes pre-provisioned with the **Kenyan Events Aggregator - System Telemetry** dashboard:
+
+![Kenyan Events Aggregator - System Telemetry](docs/grafana-telemetry.png)
+
+To generate realistic traffic so **HTTP Request Rate** (balanced across `api-1` and `api-2`), **Redis Cache Hit Ratio**, **Events Ingested**, and **Outbox Published** light up in Grafana and Prometheus:
+
+```powershell
+# 1. Generate mixed REST + GraphQL read traffic (drives RPS + Redis Cache-Aside hit ratio)
+1..150 | ForEach-Object {
+  $c = @("Nairobi","Mombasa","Nakuru","Kisumu","Kwale")[$_ % 5]
+  Invoke-RestMethod "http://localhost:8080/api/v1/events?county=$c&limit=10" | Out-Null
+  Invoke-RestMethod "http://localhost:8080/api/v1/sources" | Out-Null
+}
+
+# 2. Trigger a fresh distributed crawl & outbox burst across worker-1 & worker-2
+docker compose restart worker-1 worker-2
+```
