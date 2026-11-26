@@ -1,6 +1,6 @@
-# kenya-events-aggregator
+# Events Aggregator by Maina
 
-A headless, distributed **Kenyan Event Aggregation Service** written in **Go** (zero JavaScript), built to discover, normalize, deduplicate, and stream events from public Kenyan ticketing platforms.
+A headless, distributed **Kenyan Event Aggregation Service** written in **Go** (zero JavaScript) by **Maina** ([github.com/tensorGT](https://github.com/tensorGT)), built to discover, normalize, deduplicate, and stream events from public Kenyan ticketing platforms.
 
 Out of the box, it ships with **10 live Kenyan ticketer adapters** (pulling real events across Kenya), plus a generic endpoint ingestor so you can plug in any public JSON/REST/JSON-LD event feed and have it normalized into a single canonical schema.
 
@@ -99,6 +99,10 @@ curl "http://localhost:8080/api/v1/events?county=Nairobi&limit=10"
 Grafana comes pre-provisioned with the **Kenyan Events Aggregator - System Telemetry** dashboard:
 
 ![Kenyan Events Aggregator - System Telemetry](docs/grafana-telemetry.png)
+*Figure 1: Grafana dashboard showing live ingestion across 10 Kenyan ticketers, Redis Cache-Aside hit ratios (`0.983` on `api-1`, `0.917` on `api-2`), and closed circuit breakers.*
+
+![Prometheus Time Series - Events Ingested](docs/prometheus-telemetry.jpg)
+*Figure 2: Prometheus time-series graph of `ke_events_ingested_total` scraped from `worker-1` and `worker-2` across all 10 ticketer adapters.*
 
 To generate realistic traffic so **HTTP Request Rate** (balanced across `api-1` and `api-2`), **Redis Cache Hit Ratio**, **Events Ingested**, and **Outbox Published** light up in Grafana and Prometheus:
 

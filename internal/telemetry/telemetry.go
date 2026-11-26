@@ -83,6 +83,7 @@ func InitTracer(ctx context.Context, serviceName, otlpEndpoint string) func(cont
 		sdktrace.WithResource(resource.NewWithAttributes(
 			semconv.SchemaURL,
 			semconv.ServiceName(serviceName),
+			semconv.ServiceNamespace("events-aggregator-by-maina"),
 		)),
 	)
 	otel.SetTracerProvider(tp)

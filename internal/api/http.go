@@ -146,6 +146,7 @@ func (s *HTTPServer) handleListEvents(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("X-Served-By", s.InstanceID)
+	w.Header().Set("X-Powered-By", "Events Aggregator by Maina")
 	writeJSON(w, http.StatusOK, resp)
 }
 
@@ -368,9 +369,13 @@ func (s *HTTPServer) handleWebSocket(w http.ResponseWriter, r *http.Request) {
 func (s *HTTPServer) handleOpenAPI(w http.ResponseWriter, r *http.Request) {
 	spec := map[string]any{
 		"openapi": "3.0.3",
-		"info": map[string]string{
-			"title":   "Kenyan Events Aggregator API",
+		"info": map[string]any{
+			"title":   "Events Aggregator by Maina — Kenyan Events API",
 			"version": "1.0.0",
+			"contact": map[string]string{
+				"name": "Maina",
+				"url":  "https://github.com/tensorGT/kenya-events-aggregator",
+			},
 		},
 		"paths": map[string]any{
 			"/api/v1/events":     map[string]any{"get": map[string]string{"summary": "List & search Kenyan events"}},
